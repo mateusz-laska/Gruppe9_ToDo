@@ -52,7 +52,7 @@ def format_todo(t):
     status = "✔" if t["done"] else " "
     title = t["title"]
     prio = t.get("priority", "medium")
-    return f"[{status}] {t['id']:3} | {title} (Priority: {prio})"
+    return f"[{status}] {t['id']:3} | {title}  {prio}"
 
 def list_todos(todos, filter_mode="all", query=None):
     filtered = todos
@@ -173,7 +173,10 @@ def main():
         print("9. Change Todo Priority")
         print("H. Help")
         print("X. Exit")
-        choice = input("Choose an option (1-9 or H or X):").strip()
+        choice = input("Choose an option (1-9 or H or X): ").strip().upper()
+
+        print("DEBUG: Eingabe war '{choice}', upper: '{choice.upper()}'")
+
         if choice == '1':
             list_todos(todos, filter_mode="all")
         elif choice == '2':
@@ -193,14 +196,14 @@ def main():
             delete_todo(todos)
         elif choice == '9':
             change_priority(todos)
-        elif choice.upper() == 'H':
+        elif choice == 'H':
             help_menu()
-        elif choice.upper() == 'X':
+        elif choice == 'X':
             print("Exiting Todo Manager. Goodbye!")
             break
         else:
-            print(f"DEBUG: Eingabe war '{choice}', upper: '{choice.upper()}'")
             print("Invalid option. Please try again.")
+
 if __name__ == "__main__":
     main()
 
