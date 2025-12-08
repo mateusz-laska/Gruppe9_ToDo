@@ -33,6 +33,7 @@ def add_todo(todos):
         print("Cancelled: Title is empty.")
         return
     desc = input("Description (optional): ").strip()
+    cat = input("Category (optional): ").strip()
     prio = input("Priority (low, medium, high) [medium]: ").strip().lower()
     if prio not in ["low", "medium", "high", ""]:
         print("Invalid priority. Please enter low, medium, or high.")
@@ -44,6 +45,7 @@ def add_todo(todos):
         id=next_id(todos),
         title=title,
         desc=desc,
+        cat = cat,
         prio=prio,
         done=False
     )
@@ -54,7 +56,7 @@ def add_todo(todos):
 
 def format_todo(t: task.Task):
     status = "✔" if t.done else " "
-    return f"[{status}] {t.id:3} | {t.title}  {t.prio}"
+    return f"[{status}] {t.id:3} | {t.title} {t.cat} {t.prio}"
 
 def list_todos(todos, filter_mode="all", query=None):
     filtered = todos
