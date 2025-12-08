@@ -143,6 +143,22 @@ def show_details(todos):
             return
     print("Todo ID not found.")
 
+def filter_prios(todos):
+    try:
+        todo_prio = str(input("Enter the priority of the todo to filter (low, medium, high): "))
+    except ValueError:
+        print("Please enter a valid priority.")
+        return
+    for t in todos:
+        if t.prio == todo_prio:
+            print(format_todo(t))
+            return
+        else:
+            print("No task with this priority found.")
+            return
+    
+
+
 
 def help_menu():
     print("""Available commands:
@@ -154,6 +170,7 @@ def help_menu():
         6. Change Todo Status - Mark a todo as done or not done by ID.
         7. Show Todo Details - View detailed information of a todo by ID.
         8. Delete Todo - Remove a todo item by ID.
+        9. Filter by Priority - Show todos filtered by priority level.
         H. Help - Show this help menu.
         X. Exit - Close the application.""")
 
@@ -172,6 +189,7 @@ def main():
         print("6. Change Todo Status")
         print("7. Show Todo Details")
         print("8. Delete Todo")
+        print("9. Filter by Priority (low, medium, high)")
         print("H. Help")
         print("X. Exit")
         choice = input("Choose an option (1-9 or H or X): ").strip().upper()
@@ -193,6 +211,8 @@ def main():
             show_details(todos)
         elif choice == '8':
             delete_todo(todos)
+        elif choice == '9':
+            filter_prios(todos)
         elif choice == 'H':
             help_menu()
         elif choice == 'X':
@@ -203,7 +223,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
