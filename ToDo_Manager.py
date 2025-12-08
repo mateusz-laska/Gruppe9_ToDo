@@ -1,27 +1,31 @@
 import json
+import task
 from pathlib import Path
 from datetime import datetime
 
+
 STORE = Path("todos.json")
-
-
-
 
 def load_todos():
     if not STORE.exists():
         return []
     try:
-        return json.loads(STORE.read_text(encoding="utf-8"))
-    except Exception:
+        data = json.loads(STORE.read_text(encoding="utf-8"))
+        return [task.Task.from_dict(d) for d in data]
+    except:
         return []
 
+
 def save_todos(todos):
-    STORE.write_text(json.dumps(todos, ensure_ascii=False, indent=2), encoding="utf-8")
+    data = [t.to_dict() for t in todos]
+    STORE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    print("Speichere in:", STORE.resolve())
+
 
 def next_id(todos):
     if not todos:
         return 1
-    return max(t["id"] for t in todos) + 1
+    return max(t.id for t in todos) + 1
 
 def add_todo(todos):
     title = input("Title: ").strip()
@@ -35,59 +39,75 @@ def add_todo(todos):
         prio = input("Priority (low, medium, high) [medium]: ").strip().lower()
     elif prio == "":
         prio = "medium"
-    todo = {
-        "id": next_id(todos),
-        "title": title,
-        "description": desc,
-        "priority": prio,
-        "done": False,
-        "created": datetime.now().isoformat(),
-    }
-    todos.append(todo)
-    save_todos(todos)
-    print(f"Todo added (ID {todo['id']}).")
 
-def format_todo(t):
-    status = "✔" if t["done"] else " "
-    title = t["title"]
-    prio = t.get("priority", "medium")
-    return f"[{status}] {t['id']:3} | {title}  {prio}"
+    new_task = task.Task(
+        id=next_id(todos),
+        title=title,
+        desc=desc,
+        prio=prio,
+        done=False
+    )
+
+    todos.append(new_task)
+    save_todos(todos)
+    print(f"Todo added (ID {new_task.id}).")
+
+def format_todo(t: task.Task):
+    status = "✔" if t.done else " "
+    return f"[{status}] {t.id:3} | {t.title}  {t.prio}"
 
 def list_todos(todos, filter_mode="all", query=None):
     filtered = todos
+
     if filter_mode == "open":
-        filtered = [t for t in todos if not t["done"]]
+        filtered = [t for t in todos if not t.done]
     elif filter_mode == "done":
-        filtered = [t for t in todos if t["done"]]
+        filtered = [t for t in todos if t.done]
+
     if query:
         q = query.lower()
-        filtered = [t for t in filtered if q in t["title"].lower() or q in (t.get("description") or "").lower()]
+        filtered = [
+            t for t in filtered
+            if q in t.title.lower() or q in t.desc.lower()
+        ]
+
     if not filtered:
         print("Keine Todos gefunden.")
         return
+
     print("-" * 60)
-    for t in sorted(filtered, key=lambda x: (x["done"], x["id"])):
+    for t in filtered:
         print(format_todo(t))
     print("-" * 60)
-    print(f"{len(filtered)} Einträge (Filter: {filter_mode}{', Suche: '+query if query else ''})")
 
+# not looping when exception is thrown 
+# if not todos 
 def delete_todo(todos):
-    try:
-        todo_id = int(input("Enter the ID of the todo to delete: "))
-    except ValueError:
-        print("Please enter a valid number.")
-        return
+    notValid = True
+    if todos == []:
+        print("The list is empty, there is nothing to delete")
+        return 
+    while notValid:
+        try:
+            notValid = False
+            todo_id = int(input("Enter the ID of the todo to delete: "))
+        except ValueError:
+            notValid = True
+            print("Please enter a valid number.")
+
     for t in todos:
-        if t["id"] == todo_id:
-           confirm = input(f"Are you sure you want to delete todo '{t['title']}'? (y/n): ").strip().lower()
-           if confirm == 'y':
-               todos.remove(t)
-               save_todos(todos)
-               print(f"Todo ID {todo_id} deleted.")
-               return
-           else:
-               print("Deletion cancelled.")
-               return
+        if t.id == todo_id:
+            confirm = input(f"Are you sure you want to delete todo '{t.title}'? (y/n): ").strip().lower()
+            if confirm == 'y':
+                todos.remove(t)
+                save_todos(todos)
+                print(f"Todo ID {todo_id} deleted.")
+                return
+            else:
+                print("Deletion cancelled.")
+                return
+
+    print("Todo ID not found.")
 
 def change_todo_status(todos):
     try:
@@ -95,16 +115,17 @@ def change_todo_status(todos):
     except ValueError:
         print("Please enter a valid number.")
         return
+
     for t in todos:
-        if t["id"] == todo_id:
-            t["done"] = not t["done"]
+        if t.id == todo_id:
+            t.done = not t.done
             save_todos(todos)
-            status = "done" if t["done"] else "not done"
-            print(f"Todo ID {todo_id} marked as {status}.")
+            print(f"Todo ID {todo_id} marked as {'done' if t.done else 'not done'}.")
             return
+
     print("Todo ID not found.")
 
-
+#anpassen an verwendung von klassen
 def show_details(todos):
     try:
         todo_id = int(input("Enter the ID of the todo to view details: "))
@@ -112,33 +133,16 @@ def show_details(todos):
         print("Please enter a valid number.")
         return
     for t in todos:
-        if t["id"] == todo_id:
+        if t.id == todo_id:
             print(f"Details for Todo ID {todo_id}:")
-            print(f"Title: {t['title']}")
-            print(f"Description: {t.get('description', 'No description')}")
-            print(f"Priority: {t['priority']}")
-            print(f"Status: {'Done' if t['done'] else 'Not Done'}")
-            print(f"Created: {t['created']}")
+            print(f"Title: {t.title}")
+            print(f"Description: {t.desc}")
+            print(f"Priority: {t.prio}")
+            print(f"Status: {'Done' if t.done else 'Not Done'}")
+            print(f"Created: {t.created}")
             return
     print("Todo ID not found.")
 
-def change_priority(todos):
-    try:
-        todo_id = int(input("Enter the ID of the todo to change priority: "))
-    except ValueError:
-        print("Please enter a valid number.")
-        return
-    for t in todos:
-        if t["id"] == todo_id:
-            new_prio = input("Enter new priority (low, medium, high): ").strip().lower()
-            if new_prio in ["low", "medium", "high"]:
-                t["priority"] = new_prio
-                save_todos(todos)
-                print(f"Todo ID {todo_id} priority changed to {new_prio}.")
-            else:
-                print("Invalid priority. Please enter low, medium, or high.")
-            return
-    print("Todo ID not found.")
 
 def help_menu():
     print("""Available commands:
@@ -150,7 +154,6 @@ def help_menu():
         6. Change Todo Status - Mark a todo as done or not done by ID.
         7. Show Todo Details - View detailed information of a todo by ID.
         8. Delete Todo - Remove a todo item by ID.
-        9. Change Todo Priority - Update the priority of a todo by ID.
         H. Help - Show this help menu.
         X. Exit - Close the application.""")
 
@@ -169,12 +172,9 @@ def main():
         print("6. Change Todo Status")
         print("7. Show Todo Details")
         print("8. Delete Todo")
-        print("9. Change Todo Priority")
         print("H. Help")
         print("X. Exit")
         choice = input("Choose an option (1-9 or H or X): ").strip().upper()
-
-        print("DEBUG: Eingabe war '{choice}', upper: '{choice.upper()}'")
 
         if choice == '1':
             list_todos(todos, filter_mode="all")
@@ -193,8 +193,6 @@ def main():
             show_details(todos)
         elif choice == '8':
             delete_todo(todos)
-        elif choice == '9':
-            change_priority(todos)
         elif choice == 'H':
             help_menu()
         elif choice == 'X':

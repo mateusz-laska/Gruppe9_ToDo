@@ -1,34 +1,10 @@
 [
   {
     "id": 1,
-    "title": "Hund Füttern",
-    "description": "Hund Mittags Futter geben",
-    "priority": "low",
-    "done": true,
-    "created": "2025-11-03T09:00:27.961365"
-  },
-  {
-    "id": 2,
-    "title": "Hund",
-    "description": "hund",
+    "title": "test",
+    "description": "testtest",
     "priority": "low",
     "done": false,
-    "created": "2025-11-03T09:02:36.945776"
-  },
-  {
-    "id": 3,
-    "title": "Hund",
-    "description": "hund",
-    "priority": "medium",
-    "done": false,
-    "created": "2025-11-03T09:06:09.637516"
-  },
-  {
-    "id": 4,
-    "title": "Essen",
-    "description": "Essen",
-    "priority": "low",
-    "done": false,
-    "created": "2025-11-03T09:21:13.639158"
+    "created": "2025-12-08T08:31:00.916144"
   }
 ]
