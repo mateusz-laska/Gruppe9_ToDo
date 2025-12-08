@@ -58,12 +58,12 @@ def format_todo(t: task.Task):
     status = "✔" if t.done else " "
     return f"[{status}] {t.id:3} | {t.title} {t.cat} {t.prio}"
 
-def list_todos(todos, filter_mode="all", query=None):
+def list_todos(todos, status="all", query=None):
     filtered = todos
 
-    if filter_mode == "open":
+    if status == "open":
         filtered = [t for t in todos if not t.done]
-    elif filter_mode == "done":
+    elif status == "done":
         filtered = [t for t in todos if t.done]
 
     if query:
@@ -103,10 +103,14 @@ def delete_todo(todos):
             if confirm == 'y':
                 todos.remove(t)
                 save_todos(todos)
+                print("-" * 60)
                 print(f"Todo ID {todo_id} deleted.")
+                print("-" * 60)
                 return
             else:
+                print("-" * 60)
                 print("Deletion cancelled.")
+                print("-" * 60)
                 return
 
     print("Todo ID not found.")
@@ -122,7 +126,9 @@ def change_todo_status(todos):
         if t.id == todo_id:
             t.done = not t.done
             save_todos(todos)
+            print("-" * 60)
             print(f"Todo ID {todo_id} marked as {'done' if t.done else 'not done'}.")
+            print("-" * 60)
             return
 
     print("Todo ID not found.")
@@ -136,6 +142,7 @@ def show_details(todos):
         return
     for t in todos:
         if t.id == todo_id:
+            print("-" * 60)
             print(f"Details for Todo ID {todo_id}:")
             print(f"Title: {t.title}")
             print(f"Description: {t.desc}")
@@ -143,6 +150,7 @@ def show_details(todos):
             print(f"Category: {t.cat}")
             print(f"Status: {'Done' if t.done else 'Not Done'}")
             print(f"Created: {t.created}")
+            print("-" * 60)
             return
     print("Todo ID not found.")
 
@@ -154,46 +162,57 @@ def filter_prios(todos):
         return
     for t in todos:
         if t.prio == todo_prio:
+            print("-" * 60)
             print(format_todo(t))
+            print("-" * 60)
             return
         else:
+            print("-" * 60)
             print("No task with this priority found.")
+            print("-" * 60)
             return
         
-def filter_todos(todos):
-    print("Filter options:")
-    print("1. Filter by todo-status")
-    print("2. Filter by Priority")
-    choice = input("Choose a filter option (1/2): ").strip()
 
-    if choice == '1':
-        status = input("Enter status to filter by (open/done): ").strip().lower()
-        if status == "open":
-            list_todos(todos, filter_mode="open")
-        elif status == "done":
-            list_todos(todos, filter_mode="done")
-        else:
-            print("Invalid status option.")
-    elif choice == '2':
-        filter_prios(todos)
-    else:
-        print("Invalid filter option.")
-
+def list_filter_and_change_options(todos):
+    print("\nFilter Options:")
+    print("1. View all todos")
+    print("2. Filter by todo-status (open/done)")
+    print("3. Search todos by keyword")
+    print("4. Filter todos by priority (low, medium, high)")
+    print("5. Change todo status (open <-> done)")
+    print("6. View todo details")
+    print("7. Delete a todo")
+    print("B. Back to main menu")
+    print("X. Exit")
+    choice = input("Choose an option (1-7, B to go back or X to Exit): ").strip().upper()
     
-
-
-
-def help_menu():
-    print("""Available commands:
-        1. View All Todos - List all todos with their status.
-        2. Add Todo - Create a new todo item.
-        3. Filter Todos - Filter todos by status (open/done) or priority.
-        4. Search Todos - Search todos by keyword in title or description.
-        5. Change Todo Status - Mark a todo as done or not done by ID.
-        6. Show Todo Details - View detailed information of a todo by ID.
-        7. Delete Todo - Remove a todo item by ID.
-        H. Help - Show this help menu.
-        X. Exit - Close the application.""")
+    if choice == '1':
+        list_todos(todos, status="all")
+    elif choice == '2':
+        status = input("Enter status to filter by (open/done): ").strip().lower()
+        if status in ["open", "done"]:
+            list_todos(todos, status=status)
+        else:
+            print("Invalid status. Please enter 'open' or 'done'.")
+    elif choice == '3':
+        query = input("Enter keyword to search for: ").strip()
+        list_todos(todos, query=query)
+    elif choice == '4':
+        filter_prios(todos)
+    elif choice == '5':
+        change_todo_status(todos)
+    elif choice == '6':
+        show_details(todos)
+    elif choice == '7':
+        delete_todo(todos)
+    elif choice == 'B':
+        return
+    elif choice == 'X':
+        print("Exiting Todo Manager. Goodbye!")
+        exit()
+    else:
+        print("Invalid option. Please try again.") 
+    
 
 def main():
     print("*" * 40)
@@ -202,34 +221,15 @@ def main():
     while True:
         todos = load_todos()
         print("\nOptions:")
-        print("1. View All Todos")
+        print("1. View filter and change options")
         print("2. Add Todo")
-        print("3. Filter Todos")
-        print("4. Search Todos")
-        print("5. Change Todo Status")
-        print("6. Show Todo Details")
-        print("7. Delete Todo")
-        print("H. Help")
         print("X. Exit")
-        choice = input("Choose an option (1-9 or H or X): ").strip().upper()
+        choice = input("Choose an option (1, 2 or X): ").strip().upper()
 
         if choice == '1':
-            list_todos(todos, filter_mode="all")
+            list_filter_and_change_options(todos)
         elif choice == '2':
             add_todo(todos)
-        elif choice == '3':
-            filter_todos(todos)
-        elif choice == '4':
-            query = input("Enter search query: ").strip()
-            list_todos(todos, query=query)
-        elif choice == '5':
-            change_todo_status(todos)
-        elif choice == '6':
-            show_details(todos)
-        elif choice == '7':
-            delete_todo(todos)
-        elif choice == 'H':
-            help_menu()
         elif choice == 'X':
             print("Exiting Todo Manager. Goodbye!")
             break
