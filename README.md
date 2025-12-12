@@ -1,15 +1,15 @@
-# Todo Manager Application
+# Todo Manager
 
 Ein einfacher, konsolenbasierter Todo Manager in Python zur Verwaltung von Aufgaben mit Prioritäten, Kategorien und Status.
 Die Anwendung speichert Todos persistent in einer JSON Datei und bietet verschiedene Filter, Such und Verwaltungsfunktionen.
 
 ---
 
-## Projektuebersicht
+## Projektübersicht
 
-Dieses Projekt implementiert eine interaktive Todo Manager Anwendung fuer die Kommandozeile.
-Benutzer koennen Todos anlegen, anzeigen, filtern, bearbeiten und loeschen.
-Alle Daten werden lokal gespeichert, sodass der Zustand zwischen Programmausfuehrungen erhalten bleibt.
+Dieses Projekt implementiert eine interaktive Todo Manager Anwendung für die Kommandozeile.
+Benutzer können Todos anlegen, anzeigen, filtern, bearbeiten und löschen.
+Alle Daten werden lokal gespeichert, sodass der Zustand zwischen Programmausführungen erhalten bleibt.
 
 Repository
 https://github.com/mateusz-laska/Gruppe9_ToDo
@@ -18,28 +18,30 @@ https://github.com/mateusz-laska/Gruppe9_ToDo
 
 ## Features
 
-- Erstellen neuer Todos mit Titel, Beschreibung, Kategorie und Prioritaet
-- Prioritaeten low, medium, high
+- Erstellen neuer Todos mit Titel, Beschreibung, Kategorie und Priorität
+- Prioritäten low, medium, high
 - Anzeigen aller Todos
 - Filtern nach Status offen oder erledigt
-- Filtern nach Prioritaet
-- Suche nach Stichwoertern
-- Umschalten des Status offen erledigt
+- Filtern nach Priorität
+- Suche nach Stichwörtern
+- Umschalten des Status offen, erledigt
 - Anzeigen detaillierter Todo Informationen
-- Loeschen von Todos mit Sicherheitsabfrage
+- Löschen von Todos mit Sicherheitsabfrage
 - Persistente Speicherung in einer JSON Datei
 
 ---
 
-## Projektstruktur
+## Features
 
-.
+```
+todo-manager-app
+│
 ├── ToDo_Manager.py
 ├── task.py
 ├── todos.json
 └── README.md
 
----
+```
 
 ## Installation
 
@@ -48,37 +50,37 @@ Voraussetzungen
 - Keine externen Bibliotheken notwendig
 
 Repository klonen
-
+```
 git clone https://github.com/mateusz-laska/Gruppe9_ToDo
 cd Gruppe9_ToDo
-
+```
 ---
 
 ## Verwendung
 
 Anwendung starten
-
+```
 python ToDo_Manager.py
-
+```
 Nach dem Start erscheint ein interaktives Menue zur Verwaltung aller Todos.
 
 ---
 
 ## Bedienung
 
-Hauptmenue
+Hauptmenu
 - Todos anzeigen, filtern und bearbeiten
-- Neues Todo hinzufuegen
+- Neues Todo hinzufügen
 - Programm beenden
 
 Filter und Verwaltungsoptionen
 - Alle Todos anzeigen
 - Nur offene oder erledigte Todos anzeigen
 - Suche nach Stichwort
-- Filtern nach Prioritaet
-- Status eines Todos aendern
+- Filtern nach Priorität
+- Status eines Todos ändern
 - Details eines Todos anzeigen
-- Todo loeschen
+- Todo löschen
 
 ---
 
@@ -89,16 +91,7 @@ Die Datei wird automatisch erstellt und aktualisiert.
 
 ---
 
-## Erweiterungsmoeglichkeiten
-
-- Sortierung nach Prioritaet oder Erstellungsdatum
-- Mehrere Filter gleichzeitig
-- Export als CSV
-- Automatische Tests
-- Grafische Benutzeroberflaeche
-
----
-
 ## Lizenz
 
 Dieses Projekt dient Ausbildungs und Lernzwecken und ist frei verwendbar.
+
