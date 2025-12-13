@@ -1,11 +1,11 @@
 import json
 import task
 from pathlib import Path
-from datetime import datetime
 
 
 STORE = Path("todos.json")
 
+# Returns tasks as objects of class Task if todo.json is not empty
 def load_todos():
     if not STORE.exists():
         return []
@@ -15,18 +15,20 @@ def load_todos():
     except:
         return []
 
-
+# Saves all tasks in todos into data dictionary and writes them into todos.json
 def save_todos(todos):
     data = [t.to_dict() for t in todos]
     STORE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     print("Speichere in:", STORE.resolve())
 
-
+# Check for the highest id and return id + 1
 def next_id(todos):
     if not todos:
         return 1
     return max(t.id for t in todos) + 1
 
+# Creates a new task by asking the user for input and creating a new object of class Task with that input
+# Adds the new task to the new_task list and calls the save_todos() function to save the tasks into todos.json
 def add_todo(todos):
     title = input("Title: ").strip()
     if not title:
@@ -54,10 +56,12 @@ def add_todo(todos):
     save_todos(todos)
     print(f"Todo added (ID {new_task.id}).")
 
+# Returns a formatted string to be printed out with the list_todos() function
 def format_todo(t: task.Task):
     status = "✔" if t.done else " "
     return f"[{status}] {t.id:3} | {t.title} {t.cat} {t.prio}"
 
+# Prints out filtered tasks. The user can filter with the status or their custom query 
 def list_todos(todos, status="all", query=None):
     filtered = todos
 
@@ -82,6 +86,7 @@ def list_todos(todos, status="all", query=None):
         print(format_todo(t))
     print("-" * 60)
 
+# Deletes a task defiend by the user if the task list isn't empty
 def delete_todo(todos):
     notValid = True
     if todos == []:
@@ -113,6 +118,7 @@ def delete_todo(todos):
 
     print("Todo ID not found.")
 
+# Changes the status of a task from false to true
 def change_todo_status(todos):
     try:
         todo_id = int(input("Enter the ID of the todo to change status: "))
@@ -131,6 +137,7 @@ def change_todo_status(todos):
 
     print("Todo ID not found.")
 
+# Prints out the details of a task chosen by the user
 def show_details(todos):
     try:
         todo_id = int(input("Enter the ID of the todo to view details: "))
@@ -151,6 +158,7 @@ def show_details(todos):
             return
     print("Todo ID not found.")
 
+# Lists task with chosen priority
 def filter_prios(todos):
     try:
         todo_prio = str(input("Enter the priority of the todo to filter (low, medium, high): "))
@@ -169,7 +177,7 @@ def filter_prios(todos):
             print("-" * 60)
             return
         
-
+# Menu with filter and change options
 def list_filter_and_change_options(todos):
     print("\nFilter Options:")
     print("1. View all todos")
@@ -210,7 +218,7 @@ def list_filter_and_change_options(todos):
     else:
         print("Invalid option. Please try again.") 
     
-
+# Main function with the main menu
 def main():
     print("*" * 40)
     print("Todo Manager Application".center(40))
