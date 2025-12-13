@@ -1,5 +1,6 @@
 import json
 import task
+import os
 from pathlib import Path
 
 
@@ -63,6 +64,7 @@ def format_todo(t: task.Task):
 
 # Prints out filtered tasks. The user can filter with the status or their custom query 
 def list_todos(todos, status="all", query=None):
+    clear_terminal()
     filtered = todos
 
     if status == "open":
@@ -92,6 +94,8 @@ def delete_todo(todos):
     if todos == []:
         print("The list is empty, there is nothing to delete")
         return 
+    clear_terminal()
+    list_todos(todos)
     while notValid:
         try:
             notValid = False
@@ -139,6 +143,8 @@ def change_todo_status(todos):
 
 # Prints out the details of a task chosen by the user
 def show_details(todos):
+    clear_terminal()
+    list_todos(todos)
     try:
         todo_id = int(input("Enter the ID of the todo to view details: "))
     except ValueError:
@@ -179,6 +185,7 @@ def filter_prios(todos):
         
 # Menu with filter and change options
 def list_filter_and_change_options(todos):
+    clear_terminal()
     print("\nFilter Options:")
     print("1. View all todos")
     print("2. Filter by todo-status (open/done)")
@@ -213,6 +220,7 @@ def list_filter_and_change_options(todos):
     elif choice == 'B':
         return
     elif choice == 'X':
+        clear_terminal()
         print("Exiting Todo Manager. Goodbye!")
         exit()
     else:
@@ -240,6 +248,10 @@ def main():
             break
         else:
             print("Invalid option. Please try again.")
+
+# Clears the terminal 
+def clear_terminal():
+    os.system("cls" if os.name == "nt" else "clear")
 
 if __name__ == "__main__":
     main()
