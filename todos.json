@@ -59,7 +59,7 @@
     "description": "test",
     "priority": "medium",
     "category": "test",
-    "done": false,
+    "done": true,
     "created": "2025-12-14T12:01:11.792367"
   }
 ]

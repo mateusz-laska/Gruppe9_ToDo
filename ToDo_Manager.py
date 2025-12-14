@@ -129,6 +129,7 @@ def delete_task(todos):
 
 # Changes the status of a task from false to true
 def mark_task_done(todos):
+    show_tasks(todos)
     try:
         todo_id = int(input("Enter the ID of the todo to change status: "))
     except ValueError:
