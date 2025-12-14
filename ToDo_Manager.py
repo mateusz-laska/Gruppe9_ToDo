@@ -173,21 +173,24 @@ def show_details(todos):
 # Lists task with chosen priority
 def filter_tasks(todos):
     try:
-        todo_prio = str(input("Enter the priority of the todo to filter (low, medium, high): "))
+        todo_prio = str(input("Enter the priority of the todo to filter (low, medium, high, critical): "))
     except ValueError:
         print("Please enter a valid priority.")
         return
-    for t in todos:
-        if t.prio == todo_prio:
-            print("-" * 60)
-            print(format_todo(t))
-            print("-" * 60)
-            return
-        else:
-            print("-" * 60)
-            print("No task with this priority found.")
-            print("-" * 60)
-            return
+    
+    filtered = [t for t in todos if t.prio == todo_prio]
+
+    if not filtered:
+        print("-" * 60)
+        print("No task with this priority found.")
+        print("-" * 60)
+        return
+    
+    for t in filtered:
+        print("-" * 60)
+        print(format_todo(t))
+        print("-" * 60)
+    return
         
 # Menu with filter and change options
 def list_filter_and_change_options(todos):
